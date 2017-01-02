@@ -151,20 +151,3 @@ func TestStructReplace(t *testing.T) {
 		t.Logf("Merge(%v, %v) => %v", A, B, res)
 	}
 }
-
-func TestTrace(t *testing.T) {
-	A := []int{1, 3, 4}
-	B := []int{4, 5, 6}
-	Exp := "bbb"
-	res, err := MergeTraced(A, B)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	if !reflect.DeepEqual(res, Exp) {
-		t.Errorf("Merge(%v, %v) => %v, want %v", A, B, res, Exp)
-	} else {
-		t.Logf("Merge(%v, %v) => %v", A, B, res)
-	}
-}
