@@ -13,10 +13,11 @@ Calling `merger.Merge(a, b)` will merge `a` and `b` together, where `b` has prec
 So if you call `merger.Merge("Hello", "World")` the output will be `"World"`.
 
 `string`, `int`, `int64`, `complex` and so on will be overwritten by the argument with precendence.
-`struct`s and `map`s will be merged together (like FULL OUTER JOIN).
-`slice`s and `array`s will be concatenated.
+`struct` and `map` will be merged together (like FULL OUTER JOIN).
+`slice` and `array` will be concatenated.
 
 ### Example
+Full usage example:
 ```Go
 package main
 
@@ -58,4 +59,26 @@ func main() {
 	fmt.Println(string(ser))
 	// Output: {"FieldA":"NewVal","FieldB":"bBbB","FieldC":[1,2,3,4]}
 }
+```
+
+Merging maps:
+```
+A := map[string]int{
+	"x": 1,
+	"y": 2,
+}
+B := map[string]int{
+	"a": 1,
+	"b": 2,
+}
+V, _ := merger.Merge(A, B)
+// V: map[string]int{"a": 1, "b": 2, "x": 1, "y": 2}
+```
+
+Merging slices:
+```
+A := []int{1, 2, 3}
+B := []int{4, 5, 6}
+V, _ := merger.Merge(A, B)
+// V: []int{1, 2, 3, 4, 5}
 ```
