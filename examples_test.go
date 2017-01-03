@@ -7,6 +7,7 @@ import (
 )
 
 func ExampleMerge() {
+	// Create struct A
 	A := struct {
 		FieldA string
 		FieldB string
@@ -17,6 +18,7 @@ func ExampleMerge() {
 		[]int{1, 2},
 	}
 
+	// Create struct B
 	B := struct {
 		FieldA string
 		FieldC []int
@@ -31,7 +33,7 @@ func ExampleMerge() {
 		log.Fatal(err)
 	}
 
-	// Print it
+	// Serialize
 	ser, _ := json.Marshal(V)
 	fmt.Println(string(ser))
 	// Output: {"FieldA":"NewVal","FieldB":"bBbB","FieldC":[1,2,3,4]}

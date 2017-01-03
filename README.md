@@ -13,7 +13,7 @@ Calling `merger.Merge(a, b)` will merge `a` and `b` together, where `b` has prec
 So if you call `merger.Merge("Hello", "World")` the output will be `"World"`.
 
 `string`, `int`, `int64`, `complex` and so on will be overwritten by the argument with precendence.
-`struct` and `map` will be merged together (like FULL OUTER JOIN).
+`struct` and `map` will be merged together (like `FULL OUTER JOIN` / A ∪ B).
 `slice` and `array` will be concatenated.
 
 ### Example

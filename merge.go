@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-// Merge merges fields from `b` into `a`
+// Merge merges `a` and `b` together where `b` has precendence.
 func Merge(a interface{}, b interface{}) (interface{}, error) {
 	aKind := reflect.ValueOf(a).Kind()
 	bKind := reflect.ValueOf(b).Kind()
@@ -34,7 +34,7 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 	return nil, fmt.Errorf("Merge of (%v) and (%v) not supported", aKind, bKind)
 }
 
-// Field types are taken from `a`
+// Field types are taken from `a`. TODO: Take fields from `b` as it has precendense
 // No type assertion is made
 func structMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
@@ -78,7 +78,7 @@ func structMerge(a, b interface{}) (interface{}, error) {
 			// Field exists in A
 			resValue.FieldByName(fieldName).Set(fieldA)
 		} else if fieldB.IsValid() {
-			// Field exists in A
+			// Field exists in B
 			resValue.FieldByName(fieldName).Set(fieldB)
 		} else {
 			return nil, fmt.Errorf("both fields are invalid: (%v), (%v)", fieldA, fieldB)
@@ -89,7 +89,7 @@ func structMerge(a, b interface{}) (interface{}, error) {
 }
 
 // arrayMerge returns effectively a slice
-// Result: a || b
+// Result: a ∥ b
 // Type assertion only on Elem type
 func arrayMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
@@ -112,7 +112,7 @@ func arrayMerge(a, b interface{}) (interface{}, error) {
 	return resValue.Interface(), nil
 }
 
-// Result: a || b
+// Result: a ∪ b
 // Type assertion on indexing and value type
 func mapMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
