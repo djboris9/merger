@@ -83,9 +83,9 @@ func TestTabletest(t *testing.T) {
  * Merge tests
  */
 func TestArray(t *testing.T) {
-	var A [2]int = [2]int{1, 2}
-	var B [3]int = [3]int{3, 4, 5}
-	var Exp [5]int = [5]int{1, 2, 3, 4, 5}
+	A := [2]int{1, 2}
+	B := [3]int{3, 4, 5}
+	Exp := [5]int{1, 2, 3, 4, 5}
 	res, err := Merge(A, B)
 	if err != nil {
 		t.Fatal(err)
