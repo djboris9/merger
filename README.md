@@ -7,6 +7,16 @@ This can be useful for:
 * Setting field preferences
 
 ## Usage
+
+### Merge algorithm
+Calling `merger.Merge(a, b)` will merge `a` and `b` together, where `b` has precedence.
+So if you call `merger.Merge("Hello", "World")` the output will be `"World"`.
+
+`string`, `int`, `int64`, `complex` and so on will be overwritten by the argument with precendence.
+`struct`s and `map`s will be merged together (like FULL OUTER JOIN).
+`slice`s and `array`s will be concatenated.
+
+### Example
 ```Go
 package main
 
