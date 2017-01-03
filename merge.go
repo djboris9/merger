@@ -1,7 +1,6 @@
 package merger
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 )
@@ -19,7 +18,10 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 	} else if kindContains(mergeables, aKind) && kindContains(mergeables, bKind) {
 		// Is mergeable
 		if aKind != bKind {
-			return nil, errors.New("For merge, aKind and bKind must be same")
+			return nil, &MergeError{
+				errType:   ErrDiffKind,
+				errString: fmt.Sprintf(errDiffKindText, aKind, bKind),
+			}
 		}
 
 		if aKind == reflect.Array {
@@ -33,7 +35,10 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("Merge of (%v) and (%v) not supported", aKind, bKind)
+	return nil, &MergeError{
+		errType:   ErrMergeUnsupported,
+		errString: fmt.Sprintf(errMergeUnsupportedText, aKind, bKind),
+	}
 }
 
 // Field order is taken from a, additional fields of b are appended.
@@ -84,7 +89,10 @@ func structMerge(a, b interface{}) (interface{}, error) {
 			// Field exists in B
 			resValue.FieldByName(fieldName).Set(fieldB)
 		} else {
-			return nil, fmt.Errorf("both fields are invalid: (%v), (%v)", fieldA, fieldB)
+			return nil, &MergeError{
+				errType:   ErrInvalidFields,
+				errString: fmt.Sprintf(errInvalidFieldsText, fieldName),
+			}
 		}
 	}
 
@@ -99,7 +107,10 @@ func arrayMerge(a, b interface{}) (interface{}, error) {
 	bV := reflect.ValueOf(b)
 
 	if aV.Type().Elem() != bV.Type().Elem() {
-		return nil, errors.New("Not the same Elem type")
+		return nil, &MergeError{
+			errType:   ErrDiffArrayTypes,
+			errString: fmt.Sprintf(errDiffArrayTypesText, aV.Type().Elem(), bV.Type().Elem()),
+		}
 	}
 
 	resType := reflect.ArrayOf(aV.Len()+bV.Len(), aV.Type().Elem())
@@ -121,10 +132,16 @@ func mapMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
 	bV := reflect.ValueOf(b)
 	if aV.Type().Key() != bV.Type().Key() {
-		return nil, errors.New("Key type is different")
+		return nil, &MergeError{
+			errType:   ErrDiffMapKeyTypes,
+			errString: fmt.Sprintf(errDiffMapKeyTypesText, aV.Type().Key(), bV.Type().Key()),
+		}
 	}
 	if aV.Type().Elem() != bV.Type().Elem() {
-		return nil, errors.New("Value type is different")
+		return nil, &MergeError{
+			errType:   ErrDiffMapValueTypes,
+			errString: fmt.Sprintf(errDiffMapValueTypesText, aV.Type().Elem(), bV.Type().Elem()),
+		}
 	}
 
 	res := reflect.MakeMap(aV.Type())
@@ -159,7 +176,10 @@ func sliceMerge(a, b interface{}) (interface{}, error) {
 	bV := reflect.ValueOf(b)
 
 	if aV.Type().Elem() != bV.Type().Elem() {
-		return nil, errors.New("a or b has not the same type")
+		return nil, &MergeError{
+			errType:   ErrDiffSliceTypes,
+			errString: fmt.Sprintf(errDiffSliceTypesText, aV.Type().Elem(), bV.Type().Elem()),
+		}
 	}
 	return reflect.AppendSlice(aV, bV).Interface(), nil
 }
