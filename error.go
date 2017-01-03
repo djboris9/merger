@@ -10,6 +10,7 @@ const (
 	errDiffMapValueTypesText = "different types (%s) and (%s) for map value"
 )
 
+// MergeError types with value 2ⁿ
 const (
 	ErrDiffKind          = 1 << iota
 	ErrMergeUnsupported  = 1 << iota
@@ -21,6 +22,8 @@ const (
 )
 
 // TODO: Make a way to determine where exactly it has failed
+
+// MergeError represents an error which has accured while merging
 type MergeError struct {
 	errString string
 	errType   int
@@ -30,6 +33,7 @@ func (e *MergeError) Error() string {
 	return e.errString
 }
 
+// Type returns the MergeError type which is one or multiple of Err constants by 2ⁿ
 func (e *MergeError) Type() int {
 	return e.errType
 }

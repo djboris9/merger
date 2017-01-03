@@ -42,8 +42,9 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 }
 
 // Field order is taken from a, additional fields of b are appended.
-// BUG(djboris): Take fields types from `b` as it has precendence
 // No type assertion is made
+// BUG(djboris): When merging structs, fields including types are appended (A.Fields ∥ B.Fields).
+// But field types should be taken from b as it has precendence.
 func structMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
 	bV := reflect.ValueOf(b)
@@ -184,6 +185,7 @@ func sliceMerge(a, b interface{}) (interface{}, error) {
 	return reflect.AppendSlice(aV, bV).Interface(), nil
 }
 
+// Boolean, numeric and string types (overwrite)
 var overwriteables = []reflect.Kind{
 	reflect.Bool,
 	reflect.Int,
@@ -204,6 +206,7 @@ var overwriteables = []reflect.Kind{
 	reflect.String,
 }
 
+// Array and slice types (concat) + map and struct types (union)
 var mergeables = []reflect.Kind{
 	reflect.Array,
 	reflect.Map,
