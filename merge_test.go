@@ -68,9 +68,9 @@ func TestTabletest(t *testing.T) {
 	for _, c := range testcases {
 		res, err := Merge(c.A, c.B)
 		if err != nil {
-			t.Error(err)
-			continue
+			t.Fatal(err)
 		}
+
 		if !reflect.DeepEqual(res, c.Exp) {
 			t.Errorf("Merge(%v, %v) => %v, want %v", c.A, c.B, res, c.Exp)
 		} else {
@@ -90,6 +90,7 @@ func TestArray(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if !reflect.DeepEqual(res, Exp) {
 		t.Errorf("Merge(%v, %v) => %v, want %v", A, B, res, Exp)
 	} else {
@@ -141,8 +142,7 @@ func TestStructReplace(t *testing.T) {
 	}{1, 4, 5}
 	res, err := Merge(A, B)
 	if err != nil {
-		t.Error(err)
-		return
+		t.Fatal(err)
 	}
 
 	if !reflect.DeepEqual(res, Exp) {
@@ -150,4 +150,160 @@ func TestStructReplace(t *testing.T) {
 	} else {
 		t.Logf("Merge(%v, %v) => %v", A, B, res)
 	}
+}
+
+// Negative tests
+func TestDiffSliceTypes(t *testing.T) {
+	A := []int{1, 2}
+	B := []string{"a", "b"}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrDiffSliceTypes {
+		t.Errorf("Expected an ErrDiffSliceTypes but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestDiffArrayTypes(t *testing.T) {
+	A := [2]int{1, 2}
+	B := [2]string{"a", "b"}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrDiffArrayTypes {
+		t.Errorf("Expected an ErrDiffArrayTypes but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestDiffMapKeyTypes(t *testing.T) {
+	A := map[int]int{1: 1, 2: 2}
+	B := map[string]int{"1": 1, "2": 2}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrDiffMapKeyTypes {
+		t.Errorf("Expected an ErrDiffMapKeyTypes but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestDiffMapValueTypes(t *testing.T) {
+	A := map[int]int{1: 1, 2: 2}
+	B := map[int]string{1: "1", 2: "2"}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrDiffMapValueTypes {
+		t.Errorf("Expected an ErrDiffMapValueTypes but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestSliceArrayMerge(t *testing.T) {
+	A := []int{1, 2}
+	B := [2]int{3, 4}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrDiffKind {
+		t.Errorf("Expected an ErrDiffKind but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestPointerMerge(t *testing.T) {
+	A := "a"
+	B := &A
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrMergeUnsupported {
+		t.Errorf("Expected an ErrMergeUnsupported but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestDeepMapError(t *testing.T) {
+	A := map[int]interface{}{1: "a"}
+	B := map[int]interface{}{1: []int{}}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrMergeUnsupported {
+		t.Errorf("Expected an ErrMergeUnsupported but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestDeepStructError(t *testing.T) {
+	A := struct {
+		F string
+	}{"a"}
+	B := struct {
+		F []int
+	}{[]int{2}}
+	res, err := Merge(A, B)
+	t.Logf("Res: %v, err: %s", res, err)
+
+	if err == nil {
+		t.Fatalf("Expected an error, but got %v", res)
+	}
+
+	if e2, ok := err.(*MergeError); !ok {
+		t.Error("Expected an MergeError")
+	} else if e2.Type() != ErrMergeUnsupported {
+		t.Errorf("Expected an ErrMergeUnsupported but got %v (%v)", e2.Type(), e2)
+	}
+}
+
+func TestStructInvalidFields(t *testing.T) {
+	// Expect ErrInvalidFields
+	//
+	// sf := []reflect.StructField{reflect.StructField{
+	// 	Name: "F",
+	// 	Type: reflect.TypeOf(nil),
+	// }}
+	// sT := reflect.StructOf(sf)
+	// A := reflect.New(sT).Interface()
+	// B := reflect.New(sT).Interface()
+
+	// TODO: Research how to do this
+	t.Skip("I have no idea how to construct a struct with an invalid field to provoke ErrInvalidFields")
 }

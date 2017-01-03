@@ -1,7 +1,7 @@
 package merger
 
 const (
-	errDiffKindText          = "cannot resolve merge of (%s) and (%s)"
+	errDiffKindText          = "merge of (%s) and (%s) is invalid"
 	errMergeUnsupportedText  = "merge of (%s) and (%s) is unsupported"
 	errInvalidFieldsText     = "field with name (%s) is invalid in both structs"
 	errDiffArrayTypesText    = "different types (%s) and (%s) for array"
@@ -21,7 +21,7 @@ const (
 	ErrDiffMapValueTypes = 1 << iota
 )
 
-// TODO: Make a way to determine where exactly it has failed
+// TODO: Make a way to determine where exactly it has failed. Perhaps together with tracer
 
 // MergeError represents an error which has accured while merging
 type MergeError struct {

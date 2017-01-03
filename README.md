@@ -6,6 +6,8 @@ This can be useful for:
 * Deduplicate items before serialization
 * Setting field preferences
 
+It works with Go 1.7 and greater
+
 ## Usage
 
 ### Merge algorithm
