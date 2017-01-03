@@ -10,6 +10,14 @@
 5
 5
 #
+true
+false
+false
+#
+false
+true
+true
+#
 5
 0.1
 0.1
@@ -25,6 +33,10 @@
 [1]
 [2]
 [1,2]
+#
+[true]
+[false]
+[true, false]
 #
 [3]
 [2]
@@ -49,6 +61,10 @@
 {"A": [1]}
 {"A": [2]}
 {"A": [1, 2]}
+#
+{"A": false, "B": true}
+{"A": true, "B": false}
+{"A": true, "B": false}
 #
 {"A": 1, "B": {"C": 1}}
 {"A": 1, "B": {"C": 2}}
