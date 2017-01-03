@@ -1,5 +1,5 @@
 # Merger
-This Go package merges different types together.
+This Go package merges different types together. Nested types will be merged too.
 This can be useful for:
 
 * Merging configurations from different sources
@@ -9,14 +9,13 @@ This can be useful for:
 It works with Go 1.7 and greater
 
 ## Usage
+The full documentation including examples is available on https://godoc.org/github.com/djboris9/merger
 
 ### Merge algorithm
-Calling `merger.Merge(a, b)` will merge `a` and `b` together, where `b` has precedence.
-So if you call `merger.Merge("Hello", "World")` the output will be `"World"`.
-
-`string`, `int`, `int64`, `complex` and so on will be overwritten by the argument with precendence.
-`struct` and `map` will be merged together (like `FULL OUTER JOIN` / A ∪ B).
-`slice` and `array` will be concatenated.
+Let A be the first arbitrary value and B be the second arbitrary value with precendence.
+boolean, numeric and string types will be overwritten by the argument with precendence (B).
+slice and array types will be concatenated (A ∥ B).
+struct and map types will be merged together giving a union of all fields, where the values of them are merged too (A ∪ B)
 
 ### Example
 Full usage example:
@@ -84,3 +83,5 @@ B := []int{4, 5, 6}
 V, _ := merger.Merge(A, B)
 // V: []int{1, 2, 3, 4, 5}
 ```
+
+Other examples are in the godoc.
