@@ -62,7 +62,7 @@ func main() {
 ```
 
 Merging maps:
-```
+```Go
 A := map[string]int{
 	"x": 1,
 	"y": 2,
@@ -76,7 +76,7 @@ V, _ := merger.Merge(A, B)
 ```
 
 Merging slices:
-```
+```Go
 A := []int{1, 2, 3}
 B := []int{4, 5, 6}
 V, _ := merger.Merge(A, B)
