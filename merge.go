@@ -36,7 +36,8 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 	return nil, fmt.Errorf("Merge of (%v) and (%v) not supported", aKind, bKind)
 }
 
-// Field types are taken from `a`. TODO: Take fields from `b` as it has precendense
+// Field order is taken from a, additional fields of b are appended.
+// BUG(djboris): Take fields types from `b` as it has precendence
 // No type assertion is made
 func structMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
@@ -47,9 +48,7 @@ func structMerge(a, b interface{}) (interface{}, error) {
 	// Add fields of A to commonFields
 	for i := 0; i < aV.NumField(); i++ {
 		x := aV.Type().Field(i)
-		if !structFieldContains(commonFields, x.Name) {
-			commonFields = append(commonFields, x)
-		}
+		commonFields = append(commonFields, x)
 	}
 
 	// Add fields of B to commonFields
@@ -57,6 +56,8 @@ func structMerge(a, b interface{}) (interface{}, error) {
 		x := bV.Type().Field(i)
 		if !structFieldContains(commonFields, x.Name) {
 			commonFields = append(commonFields, x)
+		} else {
+			// TODO Overwrite type, according to BUG for this function
 		}
 	}
 
