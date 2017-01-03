@@ -6,7 +6,9 @@ import (
 	"reflect"
 )
 
-// Merge merges `a` and `b` together where `b` has precendence.
+// Merge merges a and b together where b has precendence.
+// It is not destructive on their parameters, but these must not be modified while
+// Merge is in progress.
 func Merge(a interface{}, b interface{}) (interface{}, error) {
 	aKind := reflect.ValueOf(a).Kind()
 	bKind := reflect.ValueOf(b).Kind()
