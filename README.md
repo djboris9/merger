@@ -9,7 +9,8 @@ This can be useful for:
 It works with Go 1.7 and greater
 
 ## Usage
-The full documentation including examples is available on https://godoc.org/github.com/djboris9/merger
+Documentation with examples is available on https://godoc.org/github.com/djboris9/merger
+This readme is only an introduction.
 
 ### Merge algorithm
 Let A be the first arbitrary value and B be the second arbitrary value with precendence.

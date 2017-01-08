@@ -7,7 +7,7 @@ import (
 
 // Merge merges a and b together where b has precendence.
 // It is not destructive on their parameters, but these must not be modified while
-// Merge is in progress.
+// merge is in progress.
 func Merge(a interface{}, b interface{}) (interface{}, error) {
 	aKind := reflect.ValueOf(a).Kind()
 	bKind := reflect.ValueOf(b).Kind()
@@ -43,7 +43,7 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 
 // Field order is taken from a, additional fields of b are appended.
 // No type assertion is made
-// BUG(djboris): When merging structs, fields including types are appended (A.Fields ∥ B.Fields).
+// BUG(djboris): When merging structs fields are appended (A.Fields ∥ B.Fields).
 // But field types should be taken from b as it has precendence.
 func structMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
@@ -154,7 +154,7 @@ func mapMerge(a, b interface{}) (interface{}, error) {
 
 	for _, k := range bV.MapKeys() {
 		if res.MapIndex(k).Kind() == reflect.Invalid {
-			// If key was not in `a` already, add it from `b`
+			// If key was not in a already, add it from b
 			res.SetMapIndex(k, bV.MapIndex(k))
 		} else {
 			// Need to merge both values

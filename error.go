@@ -23,7 +23,7 @@ const (
 
 // TODO: Make a way to determine where exactly it has failed. Perhaps together with tracer
 
-// MergeError represents an error which has accured while merging
+// MergeError represents an error which has occured while merging
 type MergeError struct {
 	errString string
 	errType   int
