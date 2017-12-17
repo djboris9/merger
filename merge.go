@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-// Merge merges a and b together where b has precendence.
+// Merge merges a and b together where b has precedence.
 // It is not destructive on their parameters, but these must not be modified while
 // merge is in progress.
 func Merge(a interface{}, b interface{}) (interface{}, error) {
@@ -44,7 +44,7 @@ func Merge(a interface{}, b interface{}) (interface{}, error) {
 // Field order is taken from a, additional fields of b are appended.
 // No type assertion is made
 // BUG(djboris): When merging structs fields are appended (A.Fields ∥ B.Fields).
-// But field types should be taken from b as it has precendence.
+// But field types should be taken from b as it has precedence.
 func structMerge(a, b interface{}) (interface{}, error) {
 	aV := reflect.ValueOf(a)
 	bV := reflect.ValueOf(b)

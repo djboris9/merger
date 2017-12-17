@@ -13,8 +13,8 @@ Documentation with examples is available on https://godoc.org/github.com/djboris
 This readme is only an introduction.
 
 ### Merge algorithm
-Let A be the first arbitrary value and B be the second arbitrary value with precendence.
-boolean, numeric and string types will be overwritten by the argument with precendence (B).
+Let A be the first arbitrary value and B be the second arbitrary value with precedence.
+boolean, numeric and string types will be overwritten by the argument with precedence (B).
 slice and array types will be concatenated (A ∥ B).
 struct and map types will be merged together giving a union of all fields, where the values of them are merged too (A ∪ B)
 
